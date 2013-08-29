@@ -86,15 +86,16 @@ def pg_create_db(db_name, owner):
 
 @tasks.register
 @tasks.requires_product_environment
-def pg_drop_db(db_name):
+def pg_drop_db(db_name, backup_before=True):
     '''drop a postgresql database'''
     
     if db_name in ('postgres', 'template1', 'template0'):
         print '*** You are not allowed to drop "%s"!' % db_name
         return
     
-    print '** Backup database before dropping'
-    tasks.pg_backup(db_name)
+    if backup_before:
+        print '** Backup database before dropping'
+        tasks.pg_backup(db_name)
     
     from django_productline.context import PRODUCT_CONTEXT
     db_host = PRODUCT_CONTEXT.DATABASES['default']['HOST']
@@ -198,3 +199,23 @@ def pg_restore(backup_name, db_name, owner):
         '%s/_backup/%s' % (PRODUCT_CONTEXT.APE_ROOT_DIR, backup_name),
         db_name,
     ))
+    
+@tasks.register
+@tasks.requires_product_environment    
+def pg_reset_database(backup_name, db_name, owner):
+    '''
+    Drop database, create database and restore from backup.
+    '''
+    
+    tasks.pg_drop_db(db_name, False)
+    tasks.pg_create_db(db_name, owner)
+    tasks.pg_restore(backup_name, db_name, owner)
+    print "*** Resetted database %s with backup %s" % (db_name, backup_name)
+    
+    
+    
+    
+    
+    
+    
+    
