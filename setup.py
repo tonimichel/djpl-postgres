@@ -9,7 +9,7 @@ def read(fname):
         return ''
 
 setup(
-    name='djpl-users',
+    name='djpl-postgres',
     version='0.1',
     description='A collection of django-productline postgres tasks',
     long_description=read('README.rst'),
