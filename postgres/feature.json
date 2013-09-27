@@ -1,0 +1,24 @@
+{
+    "name": "postgres",
+    "label": "djpl-postgres",
+    "version": ":git-rev:",
+    "pl": "django-productline",
+    "model_fragment": {
+        "optional": true,
+        "subfeature_of": "django_productline"
+    },
+    "context_template": {
+        "DATABASES": {
+            "default": {
+                "ENGINE": "django.db.backends.postgresql_psycopg2", 
+                "HOST": "{{ pg_host }}", 
+                "PASSWORD": "{{ pg_password }}", 
+                "NAME": "{{ pg_name }}", 
+                "USER": "{{ pg_username }}"
+            }
+        }
+    }
+}
+
+
+
