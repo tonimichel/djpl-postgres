@@ -2,6 +2,8 @@ from ape import tasks
 from random import choice
 import os
 import os.path
+import subprocess
+import glob
 
 
 def get_pgpass_file():
@@ -211,6 +213,62 @@ def pg_reset_database(backup_name, db_name, owner):
     tasks.pg_create_db(db_name, owner)
     tasks.pg_restore(backup_name, db_name, owner)
     print "*** Resetted database %s with backup %s" % (db_name, backup_name)
+    
+    
+@tasks.register
+def pg_install_psycopg2():
+    '''
+    Install psycopg2.
+    '''
+
+    try:
+        import psycopg2
+        print 'ERROR: psycopg2 is already installed'
+        return
+    except ImportError:
+        print '... installing psycopg2'
+    
+    p = subprocess.Popen(
+        '/usr/bin/python -c "import psycopg2; print psycopg2.__file__"',
+        shell=True, 
+        executable='/bin/bash', 
+        stdout=subprocess.PIPE
+    )
+    r = p.communicate()[0]
+    
+    if r is None:
+        print 'ERROR: Please install psycopg first: sudo apt-get install libpq-dev python-dev python-psycopg2; Make sure ape is not activated;'
+        return
+    
+    psycodir = os.path.dirname(r)
+    mxdir = '/'.join(psycodir.split('/')[:-1]) + '/mx'
+    sitepackages = glob.glob('%s/venv/lib/python2.7/site-packages/' % os.environ['APE_GLOBAL_DIR'])[0]
+    
+    os.system(
+        'ln -s %s %s' % (psycodir, sitepackages) + 
+        'ln -s %s %s' % (mxdir, sitepackages)
+    )
+    print '*** Successfully installed psycopg2'
+    
+    
+    
+    
+        
+    
+   
+    
+    
+        
+    
+    
+    
+    
+        
+    
+    
+    
+    
+    
     
     
     
