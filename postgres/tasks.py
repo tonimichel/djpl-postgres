@@ -175,7 +175,7 @@ def pg_backup(database_name, suffix=None):
 def pg_rename_db(db_name, new_name):
     '''rename a postgresql database'''
     from django.conf import settings
-    db_host = settings.DATABASES['default']['HOST']]
+    db_host = settings.DATABASES['default']['HOST']
     os.system('psql --host %s --username %s -c "ALTER DATABASE %s RENAME TO %s;"' % (
         db_host,
         'postgres',
