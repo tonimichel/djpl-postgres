@@ -133,8 +133,6 @@ def pg_list_dbs():
     ))
 
 
-
-
 @tasks.register
 @tasks.requires_product_environment
 def pg_list_users():
@@ -145,8 +143,6 @@ def pg_list_users():
         db_host,
         'postgres'
     ))
-
-
 
    
 @tasks.register
