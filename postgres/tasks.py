@@ -9,6 +9,30 @@ import glob
 def get_pgpass_file():
     return '%s/.pgpass' % os.path.expanduser('~')
     
+    
+
+def refine_get_context_template(original):
+    '''
+    Refines ``ape.helpers.get_context_template`` and append postgres-specific context keys.
+    '''
+    
+    def get_context():
+        context = original()
+        context.update({
+            'DATABASES': {
+                'default': {
+                    'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+                    'HOST': '', 
+                    'PASSWORD': '', 
+                    'NAME': '', 
+                    'USER': ''
+                }
+            }
+        })
+        return context
+    
+    return get_context
+    
 
 @tasks.register
 @tasks.requires_product_environment
@@ -238,7 +262,7 @@ def pg_install_psycopg2():
     
     psycodir = os.path.dirname(r)
     mxdir = '/'.join(psycodir.split('/')[:-1]) + '/mx'
-    sitepackages = glob.glob('%s/venv/lib/python2.7/site-packages/' % os.environ['APE_GLOBAL_DIR'])[0]
+    sitepackages = glob.glob('%s/venv/lib/*/site-packages/' % os.environ['APE_GLOBAL_DIR'])[0]
     
     os.system(
         'ln -s %s %s' % (psycodir, sitepackages) + 
