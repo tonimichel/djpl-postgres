@@ -1,11 +1,4 @@
-def refine_DATABASES(original):
-    return {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2', 
-            'HOST': None, 
-            'PASSWORD': None, 
-            'NAME': None, 
-            'USER': None
-        }
-    }
 
+# set DATABASES from PRODUCT_CONTEXT
+from django_productline.context import PRODUCT_CONTEXT
+refine_DATABASES = PRODUCT_CONTEXT.DATABASES
