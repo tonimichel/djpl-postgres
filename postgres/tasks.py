@@ -15,7 +15,6 @@ def refine_get_context_template(original):
     '''
     Refines ``ape.helpers.get_context_template`` and append postgres-specific context keys.
     '''
-    
     def get_context():
         context = original()
         context.update({
@@ -30,7 +29,6 @@ def refine_get_context_template(original):
             }
         })
         return context
-    
     return get_context
     
 
