@@ -234,6 +234,7 @@ def pg_reset_database(backup_name, db_name, owner):
     
     
 @tasks.register
+@tasks.requires_product_environment 
 def pg_install_psycopg2():
     '''
     Install psycopg2.
@@ -260,7 +261,7 @@ def pg_install_psycopg2():
     
     psycodir = os.path.dirname(r)
     mxdir = '/'.join(psycodir.split('/')[:-1]) + '/mx'
-    sitepackages = glob.glob('%s/venv/lib/*/site-packages/' % os.environ['APE_GLOBAL_DIR'])[0]
+    sitepackages = glob.glob('%s/_lib/venv/lib/*/site-packages/' % os.environ['CONTAINER_DIR'])[0]
     
     os.system(
         'ln -s %s %s' % (psycodir, sitepackages) + 
