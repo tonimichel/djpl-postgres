@@ -148,6 +148,9 @@ def pg_rename_user(user, username):
 def pg_list_dbs():
     '''list all databases'''
     from django.conf import settings
+
+    print '... listing all databases. Type "q" to quit.'
+
     db_host = settings.DATABASES['default']['HOST']
     os.system('psql --host %s --username %s --list' % (
         db_host,
