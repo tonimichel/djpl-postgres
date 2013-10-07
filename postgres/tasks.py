@@ -18,15 +18,10 @@ def refine_get_context_template(original):
     def get_context():
         context = original()
         context.update({
-            'DATABASES': {
-                'default': {
-                    'ENGINE': 'django.db.backends.postgresql_psycopg2', 
-                    'HOST': '', 
-                    'PASSWORD': '', 
-                    'NAME': '', 
-                    'USER': ''
-                }
-            }
+            'PG_HOST': '', 
+            'PG_PASSWORD': '', 
+            'PG_NAME': '', 
+            'PG_USER': ''
         })
         return context
     return get_context
