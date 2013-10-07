@@ -1,11 +1,13 @@
-from django_productline.context import PRODUCT_CONTEXT
 
-
-if hasattr(PRODUCT_CONTEXT, 'DATABASES'):
+def refine_DATABASES(orginal):
+    from django_productline.context import PRODUCT_CONTEXT
     # set DATABASES from PRODUCT_CONTEXT
-    refine_DATABASES = PRODUCT_CONTEXT.DATABASES
-else:
-    raise AttributeError('''
-        postgres feature is selected but configuration is missing in PRODUCT_CONTEXT.
-        Did you run "ape generate_context"?
-    ''')
+    return {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'HOST': PRODUCT_CONTEXT.PG_HOST,
+            'NAME': PRODUCT_CONTEXT.PG_NAME,
+            'USER': PRODUCT_CONTEXT.PG_USER,
+            'PASSWORD': PRODUCT_CONTEXT.PG_PASSWORD,
+        }
+    }
