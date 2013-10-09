@@ -246,7 +246,6 @@ def pg_reset_database(backup_name, db_name, owner):
     
     
 @tasks.register
-@tasks.requires_product_environment 
 def pg_install_psycopg2():
     '''
     Install psycopg2 to container-level venv.
