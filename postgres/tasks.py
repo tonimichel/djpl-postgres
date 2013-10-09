@@ -27,6 +27,20 @@ def refine_get_context_template(original):
     return get_context
     
 
+    
+def refine_post_install_container(original):
+    '''
+    Add install_pycopg2 to post_install_container.
+    '''
+    def install():
+        original()
+        tasks.pg_install_psycopg2()
+    return install
+    
+    
+    
+    
+
 @tasks.register
 @tasks.requires_product_environment
 def pg_create_user(db_username, db_password=None):
@@ -240,7 +254,7 @@ def pg_install_psycopg2():
 
     try:
         import psycopg2
-        print 'ERROR: psycopg2 is already installed'
+        print '...skipping: psycopg2 is already installed'
         return
     except ImportError:
         print '... installing psycopg2'
@@ -268,8 +282,7 @@ def pg_install_psycopg2():
     print '*** Successfully installed psycopg2'
     
     
-    
-    
+
         
     
    
