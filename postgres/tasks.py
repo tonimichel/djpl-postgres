@@ -28,7 +28,7 @@ def refine_get_context_template(original):
     
 
     
-def refine_post_install_container(original):
+def refine_install_dependencies(original):
     '''
     Add install_pycopg2 to post_install_container.
     '''
