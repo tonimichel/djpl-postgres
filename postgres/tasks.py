@@ -265,8 +265,7 @@ def pg_install_psycopg2():
         stdout=subprocess.PIPE
     )
     r = p.communicate()[0]
-    
-    if r is None:
+    if not r:
         print 'ERROR: Please install psycopg first: sudo apt-get install libpq-dev python-dev python-psycopg2; Make sure ape is not activated;'
         return
     
