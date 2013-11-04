@@ -184,6 +184,7 @@ def pg_list_users():
 def pg_backup(database_name, suffix=None):
     '''backup a postgresql database'''
     from django.conf import settings
+    from django_productline.context import PRODUCT_CONTEXT
     db_host = settings.DATABASES['default']['HOST']
     
     import datetime
@@ -224,6 +225,7 @@ def pg_rename_db(db_name, new_name):
 def pg_restore(backup_name, db_name, owner):
     '''restore a postgresql database from a dumpfile'''
     from django.conf import settings
+    from django_productline.context import PRODUCT_CONTEXT
     db_host = settings.DATABASES['default']['HOST']
     os.system('psql --host %s --username %s -f \'%s\' %s;' % (
         db_host,
