@@ -4,7 +4,7 @@ import os
 import os.path
 import subprocess
 import glob
-
+import json
 
 @tasks.register
 @tasks.requires_product_environment
