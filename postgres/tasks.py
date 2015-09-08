@@ -4,6 +4,24 @@ import os
 import os.path
 import subprocess
 import glob
+import json
+
+@tasks.register
+@tasks.requires_product_environment
+def config_db(PG_NAME, PG_PASSWORD, PG_USER, PG_HOST):
+    from django_productline.context import PRODUCT_CONTEXT
+    with open(PRODUCT_CONTEXT._data['PRODUCT_CONTEXT_FILENAME']) as jsonfile:
+        try:
+            jsondata = json.loads(jsonfile.read())
+            jsondata['PG_NAME'] = PG_NAME
+            jsondata['PG_PASSWORD'] = PG_PASSWORD
+            jsondata['PG_USER'] = PG_USER
+            jsondata['PG_HOST'] = PG_HOST
+        except:
+            print "Couldn't read context.json"
+            return
+    with open(PRODUCT_CONTEXT._data['PRODUCT_CONTEXT_FILENAME'], 'w') as jsoncontent:
+        json.dump(jsondata, jsoncontent, indent = 4)
 
 
 def get_pgpass_file():
