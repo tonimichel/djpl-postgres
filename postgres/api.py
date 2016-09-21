@@ -24,6 +24,7 @@ def dump_database(database_name):
     p = Popen(['pg_dump', '--no-owner', '--host', host, '--username', 'postgres', '-f', temp.name ,database_name], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
     p.communicate()[0]
     dump = temp.read()
+    temp.close()
 
     if len(dump) < 200:
         # in case the dump has less than 5 lines, it probably failed
