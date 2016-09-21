@@ -31,12 +31,13 @@ def refine_export_database(original):
             # add the dump to the archive in case the target path is a zip
             temp = tempfile.NamedTemporaryFile()
             temp.write(dump)
+            temp.flush()
             z = zipfile.ZipFile(target_path, 'a')
             z.write(temp.name, 'dump.sql')
             temp.close()
         else:
             # write the dump to an ordinary files
-            with codecs.open(target_path, 'w') as f:
+            with codecs.open(target_path, 'w', encoding='utf-8') as f:
                 f.write(dump)
 
         return target_path
