@@ -20,12 +20,12 @@ def refine_export_database(original):
         import zipfile
         import tempfile
         import codecs
-        from . import utils
+        from . import api
         from django.conf import settings
         # call original
         original(target_path)
         # create the dump
-        dump = utils.dump_database(settings.PRODUCT_CONTEXT.PG_NAME)
+        dump = api.dump_database(settings.PRODUCT_CONTEXT.PG_NAME)
 
         if target_path.endswith('.zip'):
             # add the dump to the archive in case the target path is a zip
@@ -42,6 +42,23 @@ def refine_export_database(original):
         return target_path
 
     return export_database
+
+@tasks.register
+@tasks.requires_product_environment
+def import_database(dump_name):
+    """
+
+    :param dump_name:
+    :return:
+    """
+    from . import api
+    from django.conf import settings
+    dump_file_path = os.path.join(settings.EXPORT_DIR, 'remote_data', dump_name)
+
+    db_name = settings.PRODUCT_CONTEXT.PG_NAME
+    owner = settings.PRODUCT_CONTEXT.PG_USER
+
+    api.restore_database(dump_file_path, db_name, owner)
 
 
 
