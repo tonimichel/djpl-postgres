@@ -6,6 +6,45 @@ import subprocess
 import glob
 import json
 
+
+def refine_export_database(original):
+
+    @tasks.requires_product_environment
+    def export_database(target_path):
+        """
+        Exports the database. In case target_path is an archive, it is added to this archive.
+        Otherwise it is written to a file.
+        :param target_path:
+        :return:
+        """
+        import zipfile
+        import tempfile
+        import codecs
+        from . import utils
+        from django.conf import settings
+        # call original
+        original(target_path)
+        # create the dump
+        dump = utils.dump_database(settings.PRODUCT_CONTEXT.PG_NAME)
+
+        if target_path.endswith('.zip'):
+            # add the dump to the archive in case the target path is a zip
+            temp = tempfile.NamedTemporaryFile()
+            temp.write(dump)
+            z = zipfile.ZipFile(target_path, 'a')
+            z.write(temp.name, 'dump.sql')
+            temp.close()
+        else:
+            # write the dump to an ordinary files
+            with codecs.open(target_path, 'w') as f:
+                f.write(dump)
+
+        return target_path
+
+    return export_database
+
+
+
 @tasks.register
 @tasks.requires_product_environment
 def config_db(PG_NAME, PG_PASSWORD, PG_USER, PG_HOST):
@@ -27,12 +66,19 @@ def config_db(PG_NAME, PG_PASSWORD, PG_USER, PG_HOST):
 def get_pgpass_file():
     return '%s/.pgpass' % os.path.expanduser('~')
     
-    
+
+
+
+
+
 
 def refine_get_context_template(original):
-    '''
-    Refines ``ape.helpers.get_context_template`` and append postgres-specific context keys.
-    '''
+    """
+     Refines ``ape.helpers.get_context_template`` and append postgres-specific context keys.
+    :param original:
+    :return:
+    """
+
     def get_context():
         context = original()
         context.update({
@@ -196,7 +242,9 @@ def pg_list_users():
         'postgres'
     ))
 
-   
+
+
+
 @tasks.register
 @tasks.requires_product_environment
 def pg_backup(database_name, suffix=None):
