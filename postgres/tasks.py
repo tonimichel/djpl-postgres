@@ -52,9 +52,10 @@ def import_database(dump_name):
     :param dump_name:
     :return:
     """
+    import os
     from . import api
     from django.conf import settings
-    dump_file_path = os.path.join(settings.EXPORT_DIR, 'remote_data', dump_name)
+    dump_file_path = os.path.join(os.getcwd(), dump_name)
 
     db_name = settings.PRODUCT_CONTEXT.PG_NAME
     owner = settings.PRODUCT_CONTEXT.PG_USER
