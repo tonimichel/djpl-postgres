@@ -13,12 +13,11 @@ def refine_export_database(original):
     @tasks.requires_product_environment
     def export_database(target_path):
         """
-        Exports the database. In case target_path is an archive, it is added to this archive.
+        Exports the database. In case target_path is an zip-archive, it is added to this archive.
         Otherwise it is written to a file.
         :param target_path:
         :return:
         """
-        import zipfile
         import tempfile
         import codecs
         from . import api
@@ -37,12 +36,11 @@ def refine_export_database(original):
             temp = tempfile.NamedTemporaryFile()
             temp.write(dump)
             temp.flush()
-            z = zipfile.ZipFile(target_path, 'a')
-            z.write(temp.name, 'dump.sql')
+            tasks.create_or_append_to_zip(temp.name, target_path, 'dump.sql')
             temp.close()
         else:
             # write the dump to an ordinary files
-            # TODO: why do we get encoding errors when endcoding='utf-8'
+            # TODO: why do we get encoding errors when endcoding='utf-8' <- error on mac, cannot reproduce on linux
             with codecs.open(target_path, 'w') as f:
                 f.write(dump)
 
@@ -62,7 +60,6 @@ def refine_import_database(original):
         :return:
         """
         from . import api
-        from django.conf import settings
 
         original(target_path, db_name, db_owner)
         api.restore_database(target_path, db_name, db_owner)
