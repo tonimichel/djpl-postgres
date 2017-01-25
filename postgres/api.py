@@ -1,6 +1,5 @@
 from __future__ import unicode_literals, print_function
-from django.conf import settings
-from subprocess import Popen, PIPE, STDOUT
+import subprocess
 import tempfile
 
 
@@ -19,8 +18,14 @@ def dump_database(host, db_name):
 
     temp = tempfile.NamedTemporaryFile()
 
-    p = Popen(['pg_dump', '--no-owner', '--host', host, '--username', 'postgres', '-f', temp.name , db_name], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-    p.communicate()[0]
+    print(
+        subprocess.check_output('pg_dump --no-owner --host {host} --username postgres  -f {tmp} {db}'.format(
+            host=host,
+            tmp=temp.name,
+            db=db_name
+        ), shell=True)
+    )
+
     dump = temp.read()
     temp.close()
 
@@ -45,10 +50,12 @@ def restore_database(target_path, db_name, owner):
     from django.conf import settings
     host = settings.DATABASES['default']['HOST']
 
-    path = '{path}'.format(path=target_path)
-
-    p = Popen(['psql', '--host', host, '--username', owner, '-f', path, db_name], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-    r = p.communicate()[0]
-    print(r)
-
+    print(
+        subprocess.check_output('psql --host {host} --username {owner} -f {path} {db}'.format(
+            host=host,
+            owner=owner,
+            path=target_path,
+            db=db_name
+        ), shell=True)
+    )
 
