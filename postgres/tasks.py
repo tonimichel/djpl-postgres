@@ -71,22 +71,21 @@ def refine_import_database(original):
 
 
 @tasks.register
-@tasks.requires_product_environment
 def config_db(PG_NAME, PG_PASSWORD, PG_USER, PG_HOST):
-    from django_productline.context import PRODUCT_CONTEXT
-    with open(PRODUCT_CONTEXT._data['PRODUCT_CONTEXT_FILENAME']) as jsonfile:
-        try:
-            jsondata = json.loads(jsonfile.read())
-            jsondata['PG_NAME'] = PG_NAME
-            jsondata['PG_PASSWORD'] = PG_PASSWORD
-            jsondata['PG_USER'] = PG_USER
-            jsondata['PG_HOST'] = PG_HOST
-        except:
-            print("Couldn't read context.json")
-            return
-    with open(PRODUCT_CONTEXT._data['PRODUCT_CONTEXT_FILENAME'], 'w') as jsoncontent:
-        json.dump(jsondata, jsoncontent, indent = 4)
-
+    """
+    Configure postgres settings, facade to inject_context
+    :param PG_NAME:
+    :param PG_PASSWORD:
+    :param PG_USER:
+    :param PG_HOST:
+    :return:
+    """
+    jsondata = dict()
+    jsondata['PG_NAME'] = PG_NAME
+    jsondata['PG_PASSWORD'] = PG_PASSWORD
+    jsondata['PG_USER'] = PG_USER
+    jsondata['PG_HOST'] = PG_HOST
+    tasks.inject_context(json.dumps(jsondata))
 
 def get_pgpass_file():
     return '%s/.pgpass' % os.path.expanduser('~')
