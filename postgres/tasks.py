@@ -56,14 +56,29 @@ def refine_import_database(original):
     @tasks.requires_product_environment
     def new_impl(target_path, db_name, db_owner):
         """
-
         :param target_path:
         :return:
         """
+        import zipfile
+        import tempfile
         from . import api
+        dump = target_path
 
-        original(target_path, db_name, db_owner)
-        api.restore_database(target_path, db_name, db_owner)
+        # extract dump if zip file given
+        if target_path.endswith('.zip'):
+
+            with zipfile.ZipFile(target_path) as unzipped_data:
+                temp = tempfile.NamedTemporaryFile()
+                temp.write(unzipped_data.read('dump.sql'))
+                temp.flush()
+
+            dump = temp.name
+
+        original(dump, db_name, db_owner)
+        api.restore_database(dump, db_name, db_owner)
+
+        if temp:
+            temp.close()
 
     return new_impl
 
