@@ -68,20 +68,20 @@ def refine_import_database(original):
 
 
 @tasks.register
-def config_db(PG_NAME, PG_PASSWORD, PG_USER, PG_HOST):
+def config_db(pg_name, pg_password, pg_user, pg_host):
     """
     Configure postgres settings, facade to inject_context
-    :param PG_NAME:
-    :param PG_PASSWORD:
-    :param PG_USER:
-    :param PG_HOST:
+    :param pg_name:
+    :param pg_password:
+    :param pg_user:
+    :param pg_host:
     :return:
     """
     jsondata = dict()
-    jsondata['PG_NAME'] = PG_NAME
-    jsondata['PG_PASSWORD'] = PG_PASSWORD
-    jsondata['PG_USER'] = PG_USER
-    jsondata['PG_HOST'] = PG_HOST
+    jsondata['PG_NAME'] = pg_name
+    jsondata['PG_PASSWORD'] = pg_password
+    jsondata['PG_USER'] = pg_user
+    jsondata['PG_HOST'] = pg_host
     tasks.inject_context(json.dumps(jsondata))
 
 def get_pgpass_file():
@@ -127,7 +127,9 @@ def refine_install_dependencies(original):
 @tasks.register
 @tasks.requires_product_environment
 def pg_create_user(db_username, db_password=None):
-    '''create a postgresql user'''
+    """
+    Create a postgresql user
+    """
     from django.conf import settings
     db_host = settings.DATABASES['default']['HOST']
 
@@ -159,7 +161,9 @@ def pg_create_user(db_username, db_password=None):
 @tasks.register
 @tasks.requires_product_environment
 def pg_drop_user(db_username):
-    '''remove a postgresql user'''
+    """
+    Remove a postgresql user
+    """
     from django.conf import settings
     db_host = settings.DATABASES['default']['HOST']
 
@@ -192,7 +196,9 @@ def pg_drop_user(db_username):
 @tasks.register
 @tasks.requires_product_environment
 def pg_create_db(db_name, owner):
-    '''Create a postgresql database'''
+    """
+    Create a postgresql database
+    """
     from django.conf import settings
     db_host = settings.DATABASES['default']['HOST']
     print(subprocess.check_output('psql --host %s --username %s -c "CREATE DATABASE %s WITH OWNER %s TEMPLATE template0 ENCODING \'UTF8\';"' % (
@@ -206,7 +212,9 @@ def pg_create_db(db_name, owner):
 @tasks.register
 @tasks.requires_product_environment
 def pg_drop_db(db_name, backup_before=True):
-    '''drop a postgresql database'''
+    """
+    Drop a postgresql database
+    """
 
     if db_name in ('postgres', 'template1', 'template0'):
         print('*** You are not allowed to drop "%s"!' % db_name)
@@ -228,7 +236,9 @@ def pg_drop_db(db_name, backup_before=True):
 @tasks.register
 @tasks.requires_product_environment
 def pg_rename_user(user, username):
-    '''list all databases'''
+    """
+    List all databases
+    """
     from django.conf import settings
     db_host = settings.DATABASES['default']['HOST']
     print(subprocess.check_output('psql --host %s --username %s -c ";ALTER USER %s RENAME TO %s;"' % (
@@ -241,7 +251,9 @@ def pg_rename_user(user, username):
 @tasks.register
 @tasks.requires_product_environment
 def pg_list_dbs():
-    '''list all databases'''
+    """
+    List all databases
+    """
     from django.conf import settings
 
     print('... listing all databases. Type "q" to quit.')
@@ -256,7 +268,9 @@ def pg_list_dbs():
 @tasks.register
 @tasks.requires_product_environment
 def pg_list_users():
-    '''list all users'''
+    """
+    List all users
+    """
     from django.conf import settings
     db_host = settings.DATABASES['default']['HOST']
     print(subprocess.check_output('psql --host %s --username %s -c "\\du;"' % (
@@ -269,7 +283,9 @@ def pg_list_users():
 @tasks.register
 @tasks.requires_product_environment
 def pg_backup(database_name, suffix=None):
-    '''backup a postgresql database'''
+    """
+    Backup a postgresql database
+    """
     from django.conf import settings
     from django_productline.context import PRODUCT_CONTEXT
     db_host = settings.DATABASES['default']['HOST']
@@ -295,7 +311,9 @@ def pg_backup(database_name, suffix=None):
 @tasks.register
 @tasks.requires_product_environment
 def pg_rename_db(db_name, new_name):
-    '''rename a postgresql database'''
+    """
+    Rename a postgresql database
+    """
     from django.conf import settings
     db_host = settings.DATABASES['default']['HOST']
     print(subprocess.check_output('psql --host %s --username %s -c "ALTER DATABASE %s RENAME TO %s;"' % (
@@ -310,7 +328,9 @@ def pg_rename_db(db_name, new_name):
 @tasks.register
 @tasks.requires_product_environment
 def pg_restore(backup_name, db_name, owner):
-    '''restore a postgresql database from a dumpfile'''
+    """
+    Restore a postgresql database from a dumpfile
+    """
     from django.conf import settings
     from django_productline.context import PRODUCT_CONTEXT
     db_host = settings.DATABASES['default']['HOST']
@@ -324,9 +344,9 @@ def pg_restore(backup_name, db_name, owner):
 @tasks.register
 @tasks.requires_product_environment
 def pg_reset_database(backup_name, db_name, owner):
-    '''
+    """
     Drop database, create database and restore from backup.
-    '''
+    """
 
     tasks.pg_drop_db(db_name, False)
     tasks.pg_create_db(db_name, owner)
@@ -336,9 +356,9 @@ def pg_reset_database(backup_name, db_name, owner):
 
 @tasks.register
 def pg_install_psycopg2():
-    '''
+    """
     Install psycopg2 to container-level venv.
-    '''
+    """
 
     try:
         import psycopg2
