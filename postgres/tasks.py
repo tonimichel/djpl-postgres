@@ -22,6 +22,7 @@ def refine_export_database(original):
         import codecs
         from . import api
         from django.conf import settings
+        from django_productline import utils
         # call original
         original(target_path)
 
@@ -36,7 +37,7 @@ def refine_export_database(original):
             temp = tempfile.NamedTemporaryFile()
             temp.write(dump)
             temp.flush()
-            tasks.create_or_append_to_zip(temp.name, target_path, 'dump.sql')
+            utils.create_or_append_to_zip(temp.name, target_path, 'dump.sql')
             temp.close()
         else:
             # write the dump to an ordinary files
