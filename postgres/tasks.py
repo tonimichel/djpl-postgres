@@ -54,8 +54,9 @@ def refine_export_database(original):
 def refine_import_database(original):
 
     @tasks.requires_product_environment
-    def new_impl(target_path, db_name, db_owner):
+    def refinement(target_path, db_name, db_owner):
         """
+        Import from sql-file or dump.sql in zip-archive
         :param target_path:
         :return:
         """
@@ -63,24 +64,27 @@ def refine_import_database(original):
         import tempfile
         from . import api
         dump = target_path
+        delete_dump = False
 
         # extract dump if zip file given
         if target_path.endswith('.zip'):
 
             with zipfile.ZipFile(target_path) as unzipped_data:
-                temp = tempfile.NamedTemporaryFile()
+                temp = tempfile.NamedTemporaryFile(delete=False)
                 temp.write(unzipped_data.read('dump.sql'))
                 temp.flush()
-
-            dump = temp.name
+                temp.close()
+                dump = temp.name
+                delete_dump = True
 
         original(dump, db_name, db_owner)
         api.restore_database(dump, db_name, db_owner)
 
-        if temp:
-            temp.close()
+        if delete_dump:
+            os.unlink(dump)
 
-    return new_impl
+
+    return refinement
 
 
 @tasks.register
