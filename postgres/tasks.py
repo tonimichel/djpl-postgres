@@ -324,6 +324,7 @@ def pg_backup(database_name, suffix=None):
     ), shell=True))
     print('*** database dumped to: ' + backup_dir)
     print(subprocess.check_output('tar -cvf %s/media.tar.gz -C %s .' % (backup_dir, PRODUCT_CONTEXT.DATA_DIR), shell=True))
+    tasks.export_context(os.path.join(backup_dir, 'context.zip'))
     print('*** __data__ compressed to: ' + backup_dir)
     return backup_name
 
