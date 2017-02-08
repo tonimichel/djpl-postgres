@@ -98,10 +98,10 @@ def config_db(pg_name, pg_password, pg_user, pg_host):
     :return:
     """
     jsondata = dict()
-    jsondata['PG_NAME'] = pg_name
-    jsondata['PG_PASSWORD'] = pg_password
-    jsondata['PG_USER'] = pg_user
-    jsondata['PG_HOST'] = pg_host
+    jsondata['DB_NAME'] = pg_name
+    jsondata['DB_PASSWORD'] = pg_password
+    jsondata['DB_USER'] = pg_user
+    jsondata['DB_HOST'] = pg_host
     tasks.inject_context(json.dumps(jsondata))
 
 def get_pgpass_file():
@@ -118,10 +118,10 @@ def refine_get_context_template(original):
     def get_context():
         context = original()
         context.update({
-            'PG_HOST': '',
-            'PG_PASSWORD': '',
-            'PG_NAME': '',
-            'PG_USER': ''
+            'DB_HOST': '',
+            'DB_PASSWORD': '',
+            'DB_NAME': '',
+            'DB_USER': ''
         })
         return context
     return get_context
