@@ -29,7 +29,7 @@ def refine_export_database(original):
         # create the dump
         dump = api.dump_database(
             host=settings.DATABASES['default']['HOST'],
-            db_name=settings.PRODUCT_CONTEXT.PG_NAME
+            db_name=settings.PRODUCT_CONTEXT.DB_NAME
         )
 
         if target_path.endswith('.zip'):
