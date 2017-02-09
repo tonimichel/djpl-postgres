@@ -5,9 +5,9 @@ def refine_DATABASES(orginal):
     return {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'HOST': PRODUCT_CONTEXT.PG_HOST,
-            'NAME': PRODUCT_CONTEXT.PG_NAME,
-            'USER': PRODUCT_CONTEXT.PG_USER,
-            'PASSWORD': PRODUCT_CONTEXT.PG_PASSWORD,
+            'HOST': PRODUCT_CONTEXT.DB_HOST,
+            'NAME': PRODUCT_CONTEXT.DB_NAME,
+            'USER': PRODUCT_CONTEXT.DB_USER,
+            'PASSWORD': PRODUCT_CONTEXT.DB_PASSWORD,
         }
     }
