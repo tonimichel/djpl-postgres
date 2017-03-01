@@ -442,7 +442,7 @@ def pg_install_psycopg2():
 
     psycodir = os.path.dirname(r)
     mxdir = '/'.join(psycodir.split('/')[:-1]) + '/mx'
-    sitepackages = glob.glob('{container_dir}/_lib/venv/lib/*/site-packages/'.format(container_dir=os.environ['CONTAINER_DIR'])[0])
+    sitepackages = glob.glob('{container_dir}/_lib/venv/lib/*/site-packages/'.format(container_dir=os.environ['CONTAINER_DIR']))[0]
 
     subprocess.check_call(
         [
