@@ -350,8 +350,8 @@ def pg_backup(database_name, suffix=None):
     subprocess.check_call(
         [
             'tar',
-            '-cvf', '{backup_dir}/media.tar.gz',
-            '-C', PRODUCT_CONTEXT.DATA_Dir, '.'
+            '-cvf', '{backup_dir}/media.tar.gz'.format(backup_dir=backup_dir),
+            '-C', PRODUCT_CONTEXT.DATA_DIR, '.'
         ]
     )
     tasks.export_context(os.path.join(backup_dir, 'context.zip'))
