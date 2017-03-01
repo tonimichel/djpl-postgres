@@ -167,7 +167,7 @@ def pg_create_user(db_username, db_password=None):
             'psql',
             '--host', db_host,
             '--username', 'postgres',
-            '-c', '"CREATE USER {db_username} WITH PASSWORD \'{db_password}\';"'.format(
+            '-c', 'CREATE USER {db_username} WITH PASSWORD \'{db_password}\';'.format(
                 db_username=db_username, db_password=db_password
             )
         ]
@@ -207,7 +207,7 @@ def pg_drop_user(db_username):
             'pgsql',
             '--host', db_host,
             '--username', 'postgres',
-            '-c', '"DROP ROLE {db_username};"'.format(db_username=db_username)
+            '-c', 'DROP ROLE {db_username};'.format(db_username=db_username)
         ]
     )
 
@@ -238,7 +238,7 @@ def pg_create_db(db_name, owner):
             'psql',
             '--host', db_host,
             '--username', 'postgres',
-            '-c', '"CREATE DATABASE {db_name} WITH OWNER {owner} TEMPLATE template0 ENCODING \'UTF8\';"'.format(
+            '-c', 'CREATE DATABASE {db_name} WITH OWNER {owner} TEMPLATE template0 ENCODING \'UTF8\';'.format(
                 db_name=db_name,
                 owner=owner
             )
@@ -268,7 +268,7 @@ def pg_drop_db(db_name, backup_before=True):
             'psql',
             '--host', db_host,
             '--username', 'postgres',
-            '-c', '"DROP DATABASE {db_name};"'.format(db_name=db_name)
+            '-c', 'DROP DATABASE {db_name};'.format(db_name=db_name)
         ]
     )
 
@@ -307,7 +307,7 @@ def pg_list_users():
             'psql',
             '--host', db_host,
             '--username', 'postgres',
-            '-c', '"\\du"'
+            '-c', '\\du'
         ]
     )
 
@@ -372,7 +372,7 @@ def pg_rename_db(db_name, new_name):
             'psql',
             '--host', db_host,
             '--username', 'postgres',
-            '-c', '"ALTER DATABASE {db_name} RENAME TO {new_name};"'.format(db_name=db_name, new_name=new_name)
+            '-c', 'ALTER DATABASE {db_name} RENAME TO {new_name};'.format(db_name=db_name, new_name=new_name)
         ]
     )
     print('*** Renamed db from "{db_name}" to "{new_name}"'.format(db_name=db_name, new_name=new_name))
