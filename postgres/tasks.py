@@ -204,7 +204,7 @@ def pg_drop_user(db_username):
 
     subprocess.check_call(
         [
-            'pgsql',
+            'psql',
             '--host', db_host,
             '--username', 'postgres',
             '-c', 'DROP ROLE {db_username};'.format(db_username=db_username)
