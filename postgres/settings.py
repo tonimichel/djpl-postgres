@@ -8,7 +8,7 @@ def refine_DATABASES(orginal):
     # set DATABASES from PRODUCT_CONTEXT
     return {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'ENGINE': 'django.db.backends.postgresql',
             'HOST': PRODUCT_CONTEXT.DB_HOST,
             'NAME': PRODUCT_CONTEXT.DB_NAME,
             'USER': PRODUCT_CONTEXT.DB_USER,
