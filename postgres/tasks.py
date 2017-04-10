@@ -126,24 +126,6 @@ def refine_get_context_template(original):
         return context
     return get_context
 
-
-
-def refine_install_dependencies(original):
-    """
-    Add install_pycopg2 to post_install_container.
-    :param original:
-    :return:
-    """
-
-    def install():
-        original()
-        tasks.pg_install_psycopg2()
-    return install
-
-
-
-
-
 @tasks.register
 @tasks.requires_product_environment
 def pg_create_user(db_username, db_password=None):
@@ -411,49 +393,3 @@ def pg_reset_database(backup_name, db_name, owner):
     tasks.pg_create_db(db_name, owner)
     tasks.pg_restore(backup_name, db_name, owner)
     print("*** Resetted database {db_name} with backup {backup_name}".format(db_name=db_name, backup_name=backup_name))
-
-
-@tasks.register
-def pg_install_psycopg2():
-    """
-    Install psycopg2 to container-level venv.
-    """
-
-    try:
-        import psycopg2
-        print('...skipping: psycopg2 is already installed')
-        return
-    except ImportError:
-        print('... installing psycopg2')
-
-    try:
-        r = subprocess.check_output(
-            '/usr/bin/python -c "from __future__ import print_function; import psycopg2; print(psycopg2.__file__)"',
-            shell=True
-        )
-    except:
-        print(
-            """
-            ERROR: Please install psycopg first: sudo apt-get install libpq-dev python-dev python-psycopg2;
-            Make sure ape is not activated;
-            """
-        )
-        return
-
-    psycodir = os.path.dirname(r)
-    mxdir = '/'.join(psycodir.split('/')[:-1]) + '/mx'
-    sitepackages = glob.glob('{container_dir}/_lib/venv/lib/*/site-packages/'.format(container_dir=os.environ['CONTAINER_DIR']))[0]
-
-    subprocess.check_call(
-        [
-            'ln',
-            '-s', psycodir, sitepackages
-        ]
-    )
-    subprocess.check_call(
-        [
-            'ln',
-            '-s', mxdir, sitepackages
-        ]
-    )
-    print('*** Successfully installed psycopg2')
