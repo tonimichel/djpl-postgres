@@ -67,11 +67,14 @@ def refine_import_database(original):
         delete_dump = False
 
         # extract dump if zip file given
-        if target_path.endswith('.zip'):
+        if zipfile.is_zipfile(target_path):
 
-            with zipfile.ZipFile(target_path) as unzipped_data:
+            with zipfile.ZipFile(target_path) as zf:
                 temp = tempfile.NamedTemporaryFile(delete=False)
-                temp.write(unzipped_data.read('dump.sql'))
+
+                dump_fn = 'dump.sql'
+
+                temp.write(zf.read(dump_fn))
                 temp.flush()
                 temp.close()
                 dump = temp.name
@@ -301,6 +304,7 @@ def pg_backup(database_name, suffix=None):
     """
     Backup a postgresql database
     """
+    # TODO: deprecated
     from django.conf import settings
     from django_productline.context import PRODUCT_CONTEXT
     db_host = settings.DATABASES['default']['HOST']
