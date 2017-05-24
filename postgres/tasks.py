@@ -269,14 +269,16 @@ def pg_list_dbs():
     print('... listing all databases. Type "q" to quit.')
 
     db_host = settings.DATABASES['default']['HOST']
-    subprocess.check_call(
+    res = subprocess.check_output (
         [
             'psql',
-            '--host', db_host,
+            '--host', 'localhost',
             '--username', 'postgres',
             '--list'
         ]
     )
+    print(res)
+    return res
 
 
 @tasks.register
