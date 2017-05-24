@@ -272,7 +272,7 @@ def pg_list_dbs():
     res = subprocess.check_output (
         [
             'psql',
-            '--host', 'localhost',
+            '--host', db_host,
             '--username', 'postgres',
             '--list'
         ]
