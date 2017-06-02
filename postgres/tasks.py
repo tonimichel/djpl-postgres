@@ -399,3 +399,16 @@ def pg_reset_database(backup_name, db_name, owner):
     tasks.pg_create_db(db_name, owner)
     tasks.pg_restore(backup_name, db_name, owner)
     print("*** Resetted database {db_name} with backup {backup_name}".format(db_name=db_name, backup_name=backup_name))
+
+
+@tasks.register
+@tasks.requires_product_environment
+def pg_db_exists(db_name):
+    """
+    Detected if a database with the given name exists
+    """
+    from . import api
+    databases = api.list_database_names()
+    result = db_name.lower() in databases
+    print(result)
+    return result

@@ -36,7 +36,17 @@ def dump_database(host, db_name):
     return dump
 
 
-
+def list_database_names():
+    """
+    Returns all database names.
+    :param host:
+    :return:
+    """
+    from django_productline.context import PRODUCT_CONTEXT
+    output = subprocess.check_output('psql --username postgres --host {host} -q -A -t -c "SELECT datname FROM pg_database"'.format(
+        host=PRODUCT_CONTEXT.DB_HOST
+    ), shell=True)
+    return output
 
 def restore_database(target_path, db_name, owner):
     """
@@ -58,4 +68,3 @@ def restore_database(target_path, db_name, owner):
             db=db_name
         ), shell=True)
     )
-
