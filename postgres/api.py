@@ -1,30 +1,39 @@
 from __future__ import unicode_literals, print_function
+
 import subprocess
 import tempfile
-
+import os
 
 
 class DumpDataError(Exception):
-    """
-    Raise whenever a dump error occurs
-    """
+    pass
+
 
 def dump_database(host, db_name):
     """
     Dumps the passed database for the current product.
+    :param host:
     :param db_name:
     :return:
     """
-
+    from django.conf import settings
     temp = tempfile.NamedTemporaryFile()
+    pg_user = settings.PRODUCT_CONTEXT.DB_USER
 
-    print(
-        subprocess.check_output('pg_dump --no-owner --host {host} --username postgres  -f {tmp} {db}'.format(
+    try:
+        subprocess.check_output('pg_dump -w --no-owner --host {host} --username {pg_user}  -f {tmp} {db}'.format(
+            host=host,
+            tmp=temp.name,
+            pg_user=pg_user,
+            db=db_name,
+        ), shell=True, stderr=open(os.devnull, 'w'))
+    except subprocess.CalledProcessError:
+        print("Dumping database using user '{user}' failed. Trying postgres user now...".format(user=pg_user))
+        subprocess.check_output('pg_dump -w --no-owner --host {host} --username postgres  -f {tmp} {db}'.format(
             host=host,
             tmp=temp.name,
             db=db_name
         ), shell=True)
-    )
 
     dump = temp.read()
     temp.close()
@@ -39,7 +48,6 @@ def dump_database(host, db_name):
 def list_database_names():
     """
     Returns all database names.
-    :param host:
     :return:
     """
     from django_productline.context import PRODUCT_CONTEXT
@@ -47,6 +55,7 @@ def list_database_names():
         host=PRODUCT_CONTEXT.DB_HOST
     ), shell=True)
     return output
+
 
 def restore_database(target_path, db_name, owner):
     """

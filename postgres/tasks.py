@@ -4,7 +4,6 @@ from random import choice
 import os
 import os.path
 import subprocess
-import glob
 import json
 
 
@@ -48,7 +47,6 @@ def refine_export_database(original):
         return target_path
 
     return export_database
-
 
 
 def refine_import_database(original):
