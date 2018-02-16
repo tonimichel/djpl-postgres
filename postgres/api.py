@@ -35,7 +35,7 @@ def dump_database(host, db_name):
             db=db_name
         ), shell=True)
 
-    dump = temp.read().decode('ascii')
+    dump = temp.read().decode('utf-8')
     temp.close()
 
     if len(dump) < 200:
