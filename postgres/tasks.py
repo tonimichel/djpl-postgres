@@ -388,6 +388,38 @@ def pg_restore(backup_name, db_name, owner):
 
 @tasks.register
 @tasks.requires_product_environment
+def pg_restore2(path, db_name, owner):
+    """
+    Restore a postgresql database from a dumpfile path
+    """
+    from django.conf import settings
+    from django_productline.context import PRODUCT_CONTEXT
+    db_host = settings.DATABASES['default']['HOST']
+    subprocess.check_call(
+        [
+            'psql',
+            '--host', db_host,
+            '--username', owner,
+            '-f', path,
+            db_name
+        ]
+    )
+
+@tasks.register
+@tasks.requires_product_environment
+def pg_reset2(path, db_name, owner):
+    """
+    Drop database, create database and restore from backup filepath.
+    """
+
+    tasks.pg_drop_db(db_name, False)
+    tasks.pg_create_db(db_name, owner)
+    tasks.pg_restore2(path, db_name, owner)
+    print("*** Resetted database {db_name} with backup {backup_name}".format(db_name=db_name, backup_name=path))
+
+
+@tasks.register
+@tasks.requires_product_environment
 def pg_reset_database(backup_name, db_name, owner):
     """
     Drop database, create database and restore from backup.
